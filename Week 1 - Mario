@@ -1,0 +1,38 @@
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    int n;
+   //to get user input for the height of the blocks
+    do
+    {
+        n = get_int("Height: ");
+    }
+    //if the user inputs aren't between 1-8 it'll prompt again
+    while (n < 1 || n > 8);
+
+    //to add blocks to more rows
+    for (int row = 0; row < n; row++)
+    {
+        //adds spacing for the block to be right aligned
+        for (int space = 0; space < n - row - 1; space++)
+        {
+            printf(" ");
+        }
+        //everytime row is increased, column is initialized to 0, it prints out a block
+        for (int column = 0; column <= row; column++)
+        {
+            printf("#");
+        }
+        //for the space between the two blocks
+        printf("  ");
+        //for the 2nd set of blocks next to the first
+        for (int column = 0; column <= row; column++)
+        {
+            printf("#");
+        }
+        printf("\n");
+    }
+    
+    }
