@@ -1,0 +1,87 @@
+#include <cs50.h>
+#include <stdio.h>
+
+void print_credit_card_brand (long long ccn);
+bool check_validity(long long ccn);
+int find_length(long long n);
+bool checksum(long long ccn);
+
+
+
+
+int main(void)
+{
+    long long credit_card_number;
+    do
+    {
+      credit_card_number = get_long_long ("Credit Card Number: ");
+    }
+    while (credit_card_number < 0);
+    if (check_validity(credit_card_number) == true)
+        print_credit_card_brand(credit_card_number);
+    else
+        printf("INVALID\n");
+}
+
+
+//checking the length of the user input
+bool check_validity(long long credit_card_number)
+{
+    int len = find_length(credit_card_number);
+
+    //if the statement is true, it'll return true, if not false
+    return (len == 13 || len == 15 || len == 16) && checksum(credit_card_number);
+}
+
+//finding the length of the credit card number
+int find_length(long long n)
+{
+    int len;
+    for (len = 0; n != 0; n /= 10, len++);
+    return len;
+}
+
+//checking for the indexes of every other number starting from the end of the number, adding them together, and multiplying by 2, if the number is more than a digit long, it'll also break the number into single digit numbers
+bool checksum(long long ccn)
+{
+    int sum = 0;
+    for (int i = 0; ccn != 0; i++, ccn /= 10)
+    {
+        if (i % 2 == 0)
+            //takes the sum of the number and adds it to the remainder of the digits skipped from the every other digit we'd look at
+            sum += ccn % 10;
+         else
+         {
+             //multiplies the "every other digit" by 2 and keeps any remainders of numbers in the 10's.
+             int digit = 2 * (ccn % 10);
+             // first digit/10 is for digits that are 10+ to be split into 2, the digit%10 is to keep the remainder of the digit i.e. if the digit is 18, the first portion keeps the 1, and the 2nd portion keeps the 8
+              sum += digit / 10 + digit % 10;
+          }
+    }
+
+    return (sum % 10) == 0;
+}
+
+//checking for credit card brands based on the starting values and # of digits
+void print_credit_card_brand(long long ccn)
+{
+    //Looking for Amex cards, start w/ 34/37 & have 15 digit numbers, e denotes scientific notation, basically how many 0's are after the number
+    if ((ccn >= 34e13 && ccn < 35e13) || (ccn >= 37e13 && ccn < 38e13))
+    {
+        printf("AMEX\n");
+    }
+    //checking for mastercard, start w/ 51-55, they are 16 digits
+    else if (ccn >= 51e14 && ccn < 56e14)
+    {
+        printf("MASTERCARD\n");
+    }
+    //checking for visa, they start w/ 4 and can have 13/16 digit numbers
+    else if ((ccn >= 4e12 && ccn < 5e12) || (ccn >= 4e15 && ccn < 5e15))
+    {
+        printf("VISA\n");
+    }
+    else
+    {
+        printf("INVALID\n");
+    }
+}
